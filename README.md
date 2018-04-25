@@ -1,9 +1,13 @@
 ## mainsale
 crowdsale contract for mainsale
+early bird: view on [etherscan](https://etherscan.io/address/0xd8c5ef40736a456c4429c3e84e16b6c403501917)
 
 
 ## presale
-crowdsale contract for pre-sale(event sale)
+crowdsale contract for event sale, type 1 and type 2
+type1, view on [etherscan](https://etherscan.io/address/0x85a866d3ad280afe8e658f2a68f833695174c618)
+type2, view on [etherscan](https://etherscan.io/address/0xd9af9691dda462b8797f668936c4dad47916636b)
+
 
 
 ## refund
