@@ -84,7 +84,7 @@ contract ZperMultiSigWallet {
 			else if (transactionType == 4) {				// delete cosigner
 				cosigner[transactionTo] = false;
 				totalCosigner--;
-				if(totalCosigner =< minimum)
+				if(totalCosigner <= minimum)
 					minimum = totalCosigner - 1;
 			}
 			txFinished();
