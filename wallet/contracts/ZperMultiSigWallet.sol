@@ -5,8 +5,10 @@ contract ZperMultiSigWallet {
 	uint8 public	totalCosigner;
 	uint8 private	votedFor;
 	uint8 private	minimum;
+	uint256 private lastVoteNo;
 
 	mapping (address => bool) internal cosigner;
+	mapping (address => uint256) internal vote;
 
 	uint8 private transactionType; 
 	address private transactionTo;
@@ -23,13 +25,14 @@ contract ZperMultiSigWallet {
 
 	constructor (address[] _cosigner, uint8 _minimum) public {
 		require((_cosigner.length > _minimum  || _cosigner.length == 2) && _minimum >= 2);
-		for(uint8 i = 0; i < _cosigner.length; i++){
+		for(uint256 i = 0; i < _cosigner.length; i++){
 			cosigner[_cosigner[i]] = true;
 		}
 
 		totalCosigner = uint8(_cosigner.length);
 		minimum = _minimum;
 		votedFor = 0;
+		lastVoteNo = 0;
 	}
 
 	function () external payable {
@@ -37,10 +40,13 @@ contract ZperMultiSigWallet {
 
 	function initiateVote(uint8 _type, address _to, uint256 _amount) internal {
 		require(votedFor == 0);
-		votedFor = 1;
+
 		transactionType = _type;
 		transactionTo = _to;
 		amount = _amount;
+
+		votedFor = 1;
+		vote[msg.sender] = lastVoteNo + 1;
 	}
 
 	function transferOwnership (address _newCosigner) onlyCosigner public {
@@ -68,7 +74,10 @@ contract ZperMultiSigWallet {
 
 	function voteFor() onlyCosigner public returns(bool) {
 		require(votedFor > 0);
+		require(vote[msg.sender] <= lastVoteNo);
+
 		votedFor++;
+		vote[msg.sender] = lastVoteNo + 1;
 
 		if(votedFor >= minimum) {
 			if(transactionType == 1) {						// transfer funds
@@ -94,6 +103,7 @@ contract ZperMultiSigWallet {
 	// must be included in transaction function's end
 	function txFinished() internal {
 		votedFor = 0;
+		lastVoteNo++;
 	}
 
 }
