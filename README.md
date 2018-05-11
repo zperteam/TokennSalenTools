@@ -22,5 +22,6 @@ refund contract for investment refund policy
 TotalSupply: 2,200,000,000
 ERC20 Contract
 
-the token contract will be newly deployed soon with upgrade version.
+Zper Token deployed.<br />
+view on [etherscan](https://etherscan.io/address/0xb5b8f5616fe42d5ceca3e87f3fddbdd8f496d760)
 
