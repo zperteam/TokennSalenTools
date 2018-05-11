@@ -3,20 +3,26 @@ pragma solidity^0.4.21;
 contract ZperMultiSigWallet {
 
 	uint8 public	totalCosigner;
-	uint8 private	votedFor;
-	uint8 private	minimum;
-	uint256 private lastVoteNo;
+	uint8 public	votedFor;
+	uint8 public	minimum;
+	uint256 public lastVoteNo;
 
-	mapping (address => bool) internal cosigner;
-	mapping (address => uint256) internal vote;
+	mapping (address => bool) public cosigner;
+	mapping (address => uint256) public vote;
 
 	uint8 private transactionType; 
 	address private transactionTo;
 	uint256 private amount;
+
+	address private voteOwner;
 	// 1: transfer ETH
 	// 2: change minimum
 	// 3: add cosigner
 	// 4: delete cosigner
+
+	event InitiateVote(uint8 txtype, address to, uint256 amount);
+	event VoteCanceled(address owner);
+	event VoteAccomplished(uint8 txtype, address to, uint256 amount);
 
 	modifier onlyCosigner() {
 		require(cosigner[msg.sender]);
@@ -44,10 +50,22 @@ contract ZperMultiSigWallet {
 		transactionType = _type;
 		transactionTo = _to;
 		amount = _amount;
+		voteOwner = msg.sender;
 
 		votedFor = 1;
 		vote[msg.sender] = lastVoteNo + 1;
+		emit InitiateVote(_type, _to, _amount);
 	}
+
+	function cancelVote() public {
+		require(votedFor > 0);
+		require(voteOwner == msg.sender);
+
+		emit VoteCanceled(msg.sender);
+
+		txFinished();
+	}
+
 
 	function transferOwnership (address _newCosigner) onlyCosigner public {
 		cosigner[msg.sender] = false;
@@ -97,6 +115,7 @@ contract ZperMultiSigWallet {
 					minimum = totalCosigner - 1;
 			}
 			txFinished();
+			emit VoteAccomplished(transactionType, transactionTo, amount);
 		}
 	}
 
