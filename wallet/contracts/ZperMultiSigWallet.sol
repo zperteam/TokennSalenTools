@@ -73,6 +73,7 @@ contract ZperMultiSigWallet {
 	}
 	
 	function transferFunds (address _to, uint256 _amount) onlyCosigner external {
+		require(_amount
 		initiateVote(1, _to, _amount);
 	}
 	function changeMinimum (uint8 _minimum) onlyCosigner external {
@@ -82,11 +83,13 @@ contract ZperMultiSigWallet {
 	}
 
 	function addCosigner (address _newCosigner) onlyCosigner external {
+		require(cosigner[_newCosigner] == false);
 		initiateVote(3, _newCosigner, 0);
 	}
 
 	function deleteCosigner (address _cosigner) onlyCosigner external {
 		require(totalCosigner >= 3);
+		require(cosigner[_cosigner] == true);
 		initiateVote(4, _cosigner, 0);
 	}
 
