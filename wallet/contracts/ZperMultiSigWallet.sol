@@ -73,7 +73,6 @@ contract ZperMultiSigWallet {
 	}
 	
 	function transferFunds (address _to, uint256 _amount) onlyCosigner external {
-		require(_amount
 		initiateVote(1, _to, _amount);
 	}
 	function changeMinimum (uint8 _minimum) onlyCosigner external {
